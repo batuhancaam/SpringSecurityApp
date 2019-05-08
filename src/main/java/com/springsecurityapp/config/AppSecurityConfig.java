@@ -1,27 +1,26 @@
 package com.springsecurityapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-
+import javax.sql.DataSource;
 
 
 @Configuration
 @EnableWebSecurity
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    //add a reference to our security data source
+    @Autowired
+    private DataSource securityDataSource;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //add out users for in memory authentication
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        auth.inMemoryAuthentication().withUser(users.username("batuhan").password("123").roles("EMPLOYEE"));
-        auth.inMemoryAuthentication().withUser(users.username("hasan").password("123").roles("MANAGER","EMPLOYEE"));
-        auth.inMemoryAuthentication().withUser(users.username("halil").password("123").roles("ADMIN","MANAGER"));
 
+        auth.jdbcAuthentication().dataSource(securityDataSource);
     }
 
     @Override
