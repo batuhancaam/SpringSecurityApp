@@ -40,8 +40,9 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll()
                 .and()
-                .csrf()
-                .disable();
+                .exceptionHandling().accessDeniedPage("/access-denied")
+                .and()
+                .csrf().disable();
 
 
 
